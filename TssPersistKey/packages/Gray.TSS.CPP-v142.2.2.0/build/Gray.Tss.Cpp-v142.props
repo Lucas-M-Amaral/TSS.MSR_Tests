@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Include this in a project that wants to consume Tss.Cpp as a nuget package for specific $(PlatformToolset). -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0">
+  
+  <!-- TSSCPP_CONFIG = Detect if Configuration contains the word 'release' or 'debug' -->
+  <PropertyGroup Condition="'$(TSSCPP_CONFIG)' == ''">
+    <TSSCPP_CONFIG>Release</TSSCPP_CONFIG>
+    <TSSCPP_CONFIG Condition="$(Configuration.ToLower().Contains('debug'))">Debug</TSSCPP_CONFIG>
+  </PropertyGroup>
+  
+  <!-- TSSCPP_LINK = can be defined as "Stat" in Directory.Build.props else default as "DLL". Ideally we would just derive this from PreprocessorDefinitions containing TSSCPP_STATICLIB, but i cant figure out how to do that. -->
+  <PropertyGroup Condition="'$(TSSCPP_LINK)' == ''">
+    <TSSCPP_LINK>DLL</TSSCPP_LINK>
+  </PropertyGroup>
+
+  <!-- Any/All Configuration will need the same include files. -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- Do we want to static link? -->
+  <ItemDefinitionGroup Condition="'$(TSSCPP_LINK)' == 'Stat'">
+    <ClCompile>
+      <PreprocessorDefinitions>TSSCPP_STATICLIB=;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- Include the proper lib in the link. -->
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies>$(MSBuildThisFileDirectory)../lib/$(Platform)/$(TSSCPP_CONFIG)$(TSSCPP_LINK)/TSS.CPP.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <!-- Copy DLL to output if we need a DLL. -->
+  <ItemGroup Condition="'$(TSSCPP_LINK)' == 'DLL' Or '$(TSSCPP_LINK)' == ''">
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\bin\$(Platform)\$(TSSCPP_CONFIG)DLL\*.dll" />
+  </ItemGroup>
+  
+</Project>
