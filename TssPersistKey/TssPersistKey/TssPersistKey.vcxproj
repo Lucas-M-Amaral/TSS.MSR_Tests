@@ -132,11 +132,13 @@
     <ClCompile Include="Templates.cpp" />
     <ClCompile Include="Tpm_Handling.cpp" />
     <ClCompile Include="TssPersistKey.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Keys.h" />
     <ClInclude Include="Templates.h" />
     <ClInclude Include="Tpm_Handling.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

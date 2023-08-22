@@ -1,6 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\TssPersistKey",
+    "\\TssPersistKey\\TssPersistKey"
   ],
+  "SelectedNode": "\\TssPersistKey\\TssPersistKey\\TssPersistKey.cpp",
   "PreviewInSolutionExplorer": false
 }

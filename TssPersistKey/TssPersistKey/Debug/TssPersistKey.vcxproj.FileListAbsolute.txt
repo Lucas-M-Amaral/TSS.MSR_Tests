@@ -1,1 +1,2 @@
 C:\Users\Lucas Monteiro\Desktop\AttemptPCP\Persist_Key\TssPersistKey\TssPersistKey\Debug\TssPersistKey.vcxproj.CopyComplete
+C:\Users\gatsu\Desktop\PCPTest\CodeAttempt\PersistencyTest\Persist_Attempt\TssPersistKey\TssPersistKey\Debug\TssPersistKey.vcxproj.CopyComplete

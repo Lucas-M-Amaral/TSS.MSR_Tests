@@ -29,7 +29,6 @@ TpmCpp::TPMT_PUBLIC Templates::getLakRsaTemplate() {
         | TpmCpp::TPMA_OBJECT::userWithAuth             // objectAttributes
         | TpmCpp::TPMA_OBJECT::restricted               //
         | TpmCpp::TPMA_OBJECT::sign,                    //
-        // | TpmCpp::TPMA_OBJECT::noDA,                    //
 
         {}, // authPolicy (no policy)
         TpmCpp::TPMS_RSA_PARMS({}, TpmCpp::TPMS_SCHEME_RSASSA(TpmCpp::TPM_ALG_ID::SHA256), 2048, 0), // parameters

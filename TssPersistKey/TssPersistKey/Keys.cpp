@@ -9,7 +9,6 @@ extern TpmCpp::Tpm2 tpm;
 TpmCpp::CreatePrimaryResponse MakeEndorsementKey() {
     return tpm._AllowErrors().CreatePrimary(TpmCpp::TPM_RH::ENDORSEMENT, {}, Templates::getEkRsaTemplate(),
         {}, {});
-
 } // MakeEndorsementKey()
 
 TpmCpp::CreatePrimaryResponse MakeAttestationKey() {
