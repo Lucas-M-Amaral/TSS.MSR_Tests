@@ -35,6 +35,23 @@ TpmCpp::TPMT_PUBLIC Templates::getLakRsaTemplate() {
         TpmCpp::TPM2B_PUBLIC_KEY_RSA());    // unique
 }
 
+TpmCpp::TPMT_PUBLIC Templates::getSrkRsaTemplate() {
+    return TpmCpp::TPMT_PUBLIC(
+        TpmCpp::TPM_ALG_ID::SHA256,	// nameAlg
+
+        TpmCpp::TPMA_OBJECT::fixedTPM               //
+        | TpmCpp::TPMA_OBJECT::fixedParent          //
+        | TpmCpp::TPMA_OBJECT::sensitiveDataOrigin  //
+        | TpmCpp::TPMA_OBJECT::userWithAuth		    // ObjectAttributes
+        | TpmCpp::TPMA_OBJECT::restricted           //
+        | TpmCpp::TPMA_OBJECT::noDA                 //
+        | TpmCpp::TPMA_OBJECT::decrypt,			    //
+
+        {},	// authPolicy (no policy)
+        TpmCpp::TPMS_RSA_PARMS(Aes128Cfb, TpmCpp::TPMS_NULL_ASYM_SCHEME(), 2048, 0),	// parameters
+        TpmCpp::TPM2B_PUBLIC_KEY_RSA());	// unique
+}
+
 TpmCpp::TPMT_PUBLIC Templates::getLDevidRsaTemplate() {
 	return TpmCpp::TPMT_PUBLIC(
 		TpmCpp::TPM_ALG_ID::SHA256,	// nameAlg

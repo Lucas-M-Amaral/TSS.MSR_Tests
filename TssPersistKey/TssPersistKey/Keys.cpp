@@ -16,7 +16,17 @@ TpmCpp::CreatePrimaryResponse MakeAttestationKey() {
         {}, {});
 } // MakeAttestationKey()
 
-TpmCpp::CreateResponse MakeLDevidKey(TpmCpp::TPM_HANDLE ekHandle) {
-    return tpm._AllowErrors().Create(ekHandle, {}, Templates::getLDevidRsaTemplate(),
+TpmCpp::CreatePrimaryResponse MakeSrkKey() {
+    return tpm._AllowErrors().CreatePrimary(TpmCpp::TPM_RH::OWNER, {}, Templates::getSrkRsaTemplate(),
+        {}, {});
+} // MakeSrkKey()
+
+TpmCpp::CreateResponse MakeOrdinaryLak(TpmCpp::TPM_HANDLE ekHandle) {
+    return tpm._AllowErrors().Create(ekHandle, {}, Templates::getLakRsaTemplate(),
+        {}, {});
+} // MakeLDevidKey()
+
+TpmCpp::CreateResponse MakeLDevidKey(TpmCpp::TPM_HANDLE srkHandle) {
+    return tpm._AllowErrors().Create(srkHandle, {}, Templates::getLDevidRsaTemplate(),
         {}, {});
 } // MakeLDevidKey()

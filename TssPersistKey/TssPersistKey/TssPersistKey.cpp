@@ -16,7 +16,7 @@ TpmCpp::TpmTcpDevice deviceTcp;
     Currently this is NOT WORKING!
 */
 
-bool useSimulator = true;
+bool useSimulator = false;
 bool useOemKeys = false;
 
 void createNewEkKey(TpmCpp::TPMT_PUBLIC& ek, TpmCpp::TPM_HANDLE& ekHandle) {
@@ -31,7 +31,7 @@ void createNewEkKey(TpmCpp::TPMT_PUBLIC& ek, TpmCpp::TPM_HANDLE& ekHandle) {
 
 int main()
 {
-    if (true)  //1
+    if (true)  // Key Creation and Certify
     {
         InitTpm();
 
@@ -42,22 +42,35 @@ int main()
         handleError();
         std::cout << "EK: \n\n" << ek.ToString() << std::endl;
 
-        auto lak = MakeAttestationKey();
+        auto srk = MakeSrkKey();
+        TpmCpp::TPM_HANDLE srkHandle = srk.handle;
         handleError();
-        TpmCpp::TPM_HANDLE lakHandle = lak.handle;
+        std::cout << "\nSRK: \n\n" << srk.ToString() << std::endl;
+
+        //auto lak = MakeAttestationKey();
+        //handleError();
+        //TpmCpp::TPM_HANDLE lakHandle = lak.handle;
+        //std::cout << "\nLAK: \n\n" << lak.ToString() << std::endl;
+
+        auto lak = MakeOrdinaryLak(ekHandle);
+        handleError();
+        TpmCpp::TPM_HANDLE lakHandle = tpm.Load(ekHandle, lak.outPrivate, lak.outPublic);
         std::cout << "\nLAK: \n\n" << lak.ToString() << std::endl;
 
-        auto devid = MakeLDevidKey(ekHandle);
+        auto devid = MakeLDevidKey(srkHandle);
         handleError();
-        TpmCpp::TPM_HANDLE devidHandle = tpm.Load(ekHandle, devid.outPrivate, devid.outPublic);
+        TpmCpp::TPM_HANDLE devidHandle = tpm.Load(srkHandle, devid.outPrivate, devid.outPublic);
         std::cout << "\nLDEVID: \n\n" << devid.ToString() << std::endl;
 
-        //tpm.EvictControl(TpmCpp::TPM_RH::OWNER, devidHandle, );
+        auto certifyLak = tpm.Certify(ekHandle, lakHandle, {}, TpmCpp::TPMS_NULL_SIG_SCHEME());
+        auto certifyDevid = tpm.Certify(devidHandle, lakHandle, {}, TpmCpp::TPMS_NULL_SIG_SCHEME());
 
+        std::cout << "\nCertify Data (EK - LAK): \n\n" << certifyLak.ToString() << std::endl;
+        std::cout << "\nCertify Data (LAK - LDevID): \n\n" << certifyDevid.ToString() << std::endl;
 
         ShutdownTpm();
     }
-    if (false)  //2
+    if (false)  // Key Persistency
     {
         InitTpm();
 
@@ -85,33 +98,5 @@ int main()
         handleError();
 
         ShutdownTpm();
-    }
-    if (false)   //3
-    {
-	    InitTpm();
-	    std::cout << "Tpm inicializado!\n";
-	    TpmCpp::TPMT_PUBLIC ek;
-	    TpmCpp::TPM_HANDLE ekhandle;
-	    TpmCpp::TPM_HANDLE persistentEkHandle = TpmCpp::TPM_HANDLE::Persistent(1000);
-
-
-	
-	    if (persistentEkHandle == 0)
-	    {
-		
-		    auto keyPersistent = tpm.ReadPublic(persistentEkHandle);
-		    ekhandle = keyPersistent.getHandle();
-		    ek = keyPersistent.outPublic;
-		    /*std::cout << ekhandle.ToString() << std::endl;
-		    std::cout << ek.ToString() << std::endl;*/
-	
-	    }
-	    else
-	    {
-		    
-		    tpm.EvictControl(TpmCpp::TPM_RH::OWNER, ekhandle, persistentEkHandle);
-		
-	    }
-
     }
 }
